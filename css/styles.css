@@ -1,27 +1,78 @@
-/* Header s pozadím */
-.hero {
-  position: relative;
-  background: url("../assets/header/zena12.svg") no-repeat center/contain;
-  background-size: 100% auto;   /* vyplní šířku, drží poměr stran SVG */
-  width: 100%;
-  padding-top: 8.5%;            /* cca 1:12 → 1/12 = 8.33 %, trochu rezerva */
+/* ---------------------------------------------------
+   Michael — základní styl
+   --------------------------------------------------- */
+
+/* Volitelně: Poppins (pokud nechceš, tuhle řádku smaž) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* Proměnné (snadná změna šířky a okrajů) */
+:root {
+  --container: 1200px;            /* max šířka obsahu */
+  --gutter: 24px;                 /* horizontální vnitřní okraj */
+  --accent: #111;                 /* barva textu/menu */
+  --muted: #666;
 }
 
-/* Navigace */
+/* Reset + základ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--accent);
+  background: #fff;
+  line-height: 1.55;
+}
+
+/* Pomocná „container“ třída, pokud ji budeš chtít použít jinde */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* ---------------------------------------------------
+   HLAVIČKA S OBRÁZKEM
+   --------------------------------------------------- */
+
+.hero {
+  /* Obrázek je podklad hlavičky, vycentrován na obsah (ne na okraje stránky) */
+  position: relative;
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 8.5% var(--gutter) 0;   /* 8.5% ≈ poměr 1:12 (rezerva), boky = okraje */
+
+  /* pozadí = naše SVG, zarovnáno doprava dole, bez ořezu, drží poměr 
+     (desktop/tablet; mobilní chování níže v media queries) */
+  background: url("../assets/header/zena12.svg") no-repeat right bottom / contain;
+  background-origin: content-box;
+  background-clip: content-box;
+}
+
+/* ---------------------------------------------------
+   NAVIGACE
+   --------------------------------------------------- */
+
 .menu {
+  /* Menu leží nad obrázkem, v levé „bílé“ části */
   position: absolute;
   top: 8%;
-  left: 6%;
+  left: var(--gutter);
+  right: var(--gutter);
+
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: clamp(16px, 2vw, 32px);
 }
 
 .menu .logo {
-  font-weight: 600;
   text-decoration: none;
-  color: #000;
-  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.2vw + .35rem, 1.35rem);
+  white-space: nowrap;
 }
 
 .menu ul {
@@ -29,26 +80,95 @@
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 24px;
+  gap: clamp(12px, 1.2vw, 28px);
+  font-size: clamp(.95rem, 1vw + .2rem, 1.15rem);
 }
 
 .menu li a {
   text-decoration: none;
-  color: #000;
+  color: var(--accent);
   font-weight: 500;
 }
 
-/* 🔽 Mobilní verze */
-@media (max-width: 768px) {
+.menu li a:hover,
+.menu li a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Burger — připravený styl (funkčnost přidáme JS později) */
+.burger {
+  appearance: none;
+  display: none;                 /* defaultně skrytý (desktop/tablet) */
+  border: 0;
+  background: transparent;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------
+   HLAVNÍ OBSAH
+   --------------------------------------------------- */
+
+main {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 32px var(--gutter) 72px;
+}
+
+h1, h2, h3 {
+  line-height: 1.25;
+  margin: 0 0 .4em;
+}
+
+h1 { font-size: clamp(1.6rem, 2.2vw + .6rem, 2.2rem); }
+h2 { font-size: clamp(1.25rem, 1.6vw + .6rem, 1.6rem); }
+p  { margin: .5em 0 1em; color: var(--muted); }
+
+/* ---------------------------------------------------
+   MEDIA QUERIES
+   --------------------------------------------------- */
+
+/* 1) Desktop + tablet (≥ 769 px): obrázek i plné menu
+   — už je nastaveno výše jako výchozí stav. */
+
+/* 2) Mobil — PORTRAIT: bez obrázku, jen burger (šířka <= 768 px a výška > šířka) */
+@media (max-width: 768px) and (orientation: portrait) {
   .hero {
-    background: none;    /* vypne obrázek */
-    padding-top: 0;      /* odstraní rezervu */
+    background: none;              /* vypnout SVG podklad */
+    padding: 0 var(--gutter);      /* bez rezervy nahoře */
   }
+
   .menu {
-    position: relative;  /* menu se posune normálně do flow */
-    padding: 16px;
+    position: relative;            /* nav není absolutní — spadne do flow */
+    top: 0;
+    padding: 12px 0;
+    justify-content: space-between;
   }
-  .menu ul {
-    display: none;       /* jen burger – doplníme později */
+
+  .menu ul { display: none; }      /* schovat odkazy */
+  .burger { display: inline-block; }
+}
+
+/* 3) Mobil — LANDSCAPE: zobraz obrázek i plné menu (šířka <= 768 px, šířka > výška) */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    background: url("../assets/header/zena12.svg") no-repeat right bottom / contain;
+    padding-top: 8.5%;
   }
+
+  .menu ul { display: flex; }
+  .burger { display: none; }
+}
+
+/* 4) Extra úzké displeje (rezerva) */
+@media (max-width: 360px) {
+  .menu .logo { font-size: 1rem; }
+}
+
+/* 5) Širší obrazovky — můžeš zvýšit max šířku kontejneru, pokud chceš */
+@media (min-width: 1440px) {
+  :root { --container: 1320px; }   /* klidně uprav nebo smaž */
 }
