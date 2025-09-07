@@ -1,1 +1,55 @@
+/* Reset a základní styl */
+body {
+  margin: 0;
+  font-family: "Poppins", Arial, sans-serif;
+  background: #fff;
+  color: #222;
+}
+
+/* Header s pozadím */
+.hero {
+  position: relative;
+  background: url("../assets/header/zena.svg") no-repeat center/contain;
+  background-size: 100% auto;  /* vyplní šířku, výška dle poměru SVG */
+  width: 100%;
+  padding-top: 16%;  /* rezervuje výšku podle poměru stran ~1:6.4 */
+}
+
+/* Navigace */
+.menu {
+  position: absolute;
+  top: 8%;
+  left: 6%;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.menu .logo {
+  font-weight: 600;
+  text-decoration: none;
+  color: #000;
+  font-size: 1.2rem;
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 24px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+}
+
+/* Mobilní verze */
+@media (max-width: 768px) {
+  .menu ul {
+    display: none; /* jen burger – doplníme později */
+  }
+}
 
